@@ -78,7 +78,7 @@ class Searcher:
         :return: dictionary of relevant documents mapping doc_id to document frequency.
         """
         relevant_docs = {}
-        query = self.fix_query_wordnet(query_as_list)
+        query = self.fix_query_spelling(query_as_list)
 
         # if self.config.toStem:
         #     sttemer = PorterStemmer()
@@ -130,7 +130,7 @@ class Searcher:
                     docs_dict[doc_id] = (1, [(term, doc_ditails[0])])
         return docs_dict
 
-    def fix_query_wordnet(self, query):
+    def fix_query_spelling(self, query):
 
         spell = SpellChecker()
 

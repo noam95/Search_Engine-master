@@ -78,12 +78,35 @@ class Searcher:
         :return: dictionary of relevant documents mapping doc_id to document frequency.
         """
         relevant_docs = {}
-        for term in query_as_list:
-            posting_list = self._indexer.get_term_posting_list(term)
-            for doc_id, tf in posting_list:
-                df = relevant_docs.get(doc_id, 0)
-                relevant_docs[doc_id] = df + 1
-        return relevant_docs
+        query = query_as_list
+
+        # if self.config.toStem:
+        #     sttemer = PorterStemmer()
+        for term in query:
+            # if self.config.toStem and " " not in term:#no stem for name and identity
+            #     term = sttemer.stem(term)
+            try:#collecting term data
+                #for cases like 'NILLI' or 'Donald Trump'
+                inverted_index = self._indexer.inverted_idx
+                posting_dict = self._indexer.postingDict
+                try:
+                    term_data = inverted_index[term]
+                    term_line_in_posting = term_data[0][1]
+                    file_name = term_data[0][0]
+                    origin_lines = posting_dict[file_name]
+                    original_term_data = origin_lines[term_line_in_posting]
+                    relevant_docs[term] = original_term_data
+                except:
+                    # lower case
+                    term_data = inverted_index[term.lower()]
+                    term_line_in_posting = term_data[0][1]
+                    file_name = term_data[0][0]
+                    origin_lines = posting_dict[file_name]
+                    relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
+            except Exception:
+                raise
+        return relevant_docs #dict Keys- Term, Values- list of docs
+
 
     def get_relevant_doc_dict(self, relevant_docs):
         docs_dict = {}# key= doc_id, value= (num_of_terms appears_in_doc from qury, [(terms,num_of_term_appears)])
