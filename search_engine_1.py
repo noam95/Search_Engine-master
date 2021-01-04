@@ -15,7 +15,7 @@ from gensim.models import KeyedVectors
 
 import utils
 
-
+#spelling correction
 
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
@@ -93,7 +93,8 @@ class SearchEngine:
         This is where you would load models like word2vec, LSI, LDA, etc. and
         assign to self._model, which is passed on to the searcher at query time.
         """
-        self._model = KeyedVectors.load_word2vec_format('C:/Users/User/PycharmProjects/Search_Engine-master/GoogleNews-vectors-negative300.bin', binary=True)
+        pass
+        #self._model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
 
 
     # DO NOT MODIFY THIS SIGNATURE
