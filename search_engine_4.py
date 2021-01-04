@@ -7,19 +7,20 @@ from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
-from searcher_wordNet import Searcher
+from searcher_word2vec import Searcher
 from timeit import default_timer as timer
 from datetime import timedelta
+from gensim.models import KeyedVectors
+
 import utils
 
-#wordnet
+#word2vec
 
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation, but you must have a parser and an indexer.
-    #using wordNet to expand queries
     def __init__(self, config=None):
         self._config = config
         if config.toStem:
@@ -85,13 +86,14 @@ class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
-    def load_precomputed_model(self, model_dir=None):
+    def load_precomputed_model(self, model_dir=None):#TODO implement
         """
         Loads a pre-computed model (or models) so we can answer queries.
         This is where you would load models like word2vec, LSI, LDA, etc. and
         assign to self._model, which is passed on to the searcher at query time.
         """
-        pass
+        self._model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -111,3 +113,4 @@ class SearchEngine:
             return
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
+
