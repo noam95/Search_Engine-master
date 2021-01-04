@@ -79,6 +79,7 @@ class Searcher:
         """
         relevant_docs = {}
         query = self.fix_query_spelling(query_as_list)
+        #query =query_as_list
 
         # if self.config.toStem:
         #     sttemer = PorterStemmer()
@@ -141,4 +142,5 @@ class Searcher:
         for word in misspelled:
             # Get the one `most likely` answer
             query.append(spell.correction(word))
+        return query
 

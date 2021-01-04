@@ -32,25 +32,28 @@ class Ranker:
             idf_term = math.log((total_docs / df_term), 2)
             idf_dict[term] = idf_term
             #tf term in query
-            tf_term_q = qurey.count(term)
+            tf_term_q = qurey[term]
             tf_idf_q += tf_term_q * idf_term
         for doc_id in relevant_doc.keys():
-            for term in relevant_doc[doc_id][
-                1]:  # key= doc_id, value= (num_of_terms_in_qury, [(term,num_of_term_appears)])
+            for term in relevant_doc[doc_id][1]:  # key= doc_id, value= (num_of_terms_in_qury, [(term,num_of_term_appears)])
                 term_name = term[0]
                 tf_term = int(term[1]) / documents_data[doc_id][2]
                 idf_term = float(idf_dict[term_name])
                 tf_idf = tf_term * idf_term
-                docs_dict[doc_id] += tf_idf
+                if doc_id in docs_dict.keys():
+                    docs_dict[doc_id] += tf_idf
+                else:
+                    docs_dict[doc_id] = tf_idf
         cosine_list = []
         for doc in docs_dict:
-            inner_prodect = doc * tf_idf_q
-            doc_len = documents_data[doc] #lenght of doc
+            inner_prodect = docs_dict[doc] * tf_idf_q
+            doc_len = documents_data[doc][2] #lenght of doc
             q_len = len(qurey)
             mul = doc_len * q_len
-            cosine = float(inner_prodect/mul)
+            cosine = inner_prodect/mul
             tup = (cosine, doc)#similarity, doc_id
             cosine_list.append(tup)
+        rank_list_sorted = sorted(cosine_list, reverse=True)
         if k is not None:
-            cosine_list = cosine_list[:k]
-        return [d[1] for d in cosine_list]#TODO debug here
+            rank_list_sorted = rank_list_sorted[:k]
+        return [d[1] for d in rank_list_sorted]#TODO debug here
