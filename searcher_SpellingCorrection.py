@@ -3,7 +3,7 @@ from datetime import timedelta
 from timeit import default_timer as timer
 
 from spellchecker import SpellChecker
-from ranker import Ranker
+from ranker_tf_idf import Ranker
 import utils
 
 
