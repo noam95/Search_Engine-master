@@ -1,10 +1,11 @@
 from nltk import PorterStemmer
 from nltk import RegexpTokenizer
+from spellchecker import SpellChecker
+
 from configuration import ConfigClass
 from parser_module import Parse
 
-
-class Parse_stem(Parse):
+class Parse_ADV(Parse):
     def parse_sentence(self, text):
         """
         This function tokenize, remove stop words and apply lower case for every word within the text
@@ -105,8 +106,16 @@ class Parse_stem(Parse):
                         var = self.cut_end_begining(var)
                     tokenized_text_fixed.append(var)
                 elif self.is_number(var):
+                    var = self.numbers_to_int(var)
                     tokenized_text_fixed.append(var)
             return tokenized_text_fixed
         except Exception:
             raise
             #print("fail in parser main function")
+
+    def numbers_to_int(self,num):
+        numbers = ['one','two','three','for','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen', \
+             'seventeen','eighteen','nineteen','twenteen']
+        if num in numbers:
+            num = numbers.index(num)
+        return str(num)

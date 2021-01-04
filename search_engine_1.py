@@ -6,6 +6,7 @@ from parser_module_stamming import Parse_stem
 from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
+from parser_module_adv import Parse_ADV
 from indexer import Indexer
 from searcher_SpellingCorrection import Searcher
 from timeit import default_timer as timer
@@ -92,7 +93,7 @@ class SearchEngine:
         This is where you would load models like word2vec, LSI, LDA, etc. and
         assign to self._model, which is passed on to the searcher at query time.
         """
-        self._model = KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin", binary=True)
+        self._model = KeyedVectors.load_word2vec_format('C:/Users/User/PycharmProjects/Search_Engine-master/GoogleNews-vectors-negative300.bin', binary=True)
 
 
     # DO NOT MODIFY THIS SIGNATURE

@@ -6,6 +6,7 @@ from parser_module_stamming import Parse_stem
 from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
+from parser_module_adv import Parse_ADV
 from indexer import Indexer
 from searcher import Searcher
 from timeit import default_timer as timer
@@ -26,7 +27,7 @@ class SearchEngine:
         if config.toStem:
             self._parser = Parse_stem()
         else:
-            self._parser = Parse()
+            self._parser = Parse_ADV()
         self._indexer = Indexer(config)
         self._model = None
 
@@ -89,7 +90,7 @@ class SearchEngine:
     def load_precomputed_model(self, model_dir=None):#TODO implement
         """
         Loads a pre-computed model (or models) so we can answer queries.
-        This is where you would load models like word2vec, LSI, LDA, etc. and 
+        This is where you would load models like word2vec, LSI, LDA, etc. and
         assign to self._model, which is passed on to the searcher at query time.
         """
         self._model = KeyedVectors.load_word2vec_format('C:/Users/User/PycharmProjects/Search_Engine-master/GoogleNews-vectors-negative300.bin', binary=True)
@@ -98,14 +99,14 @@ class SearchEngine:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def search(self, query):
-        """ 
-        Executes a query over an existing index and returns the number of 
+        """
+        Executes a query over an existing index and returns the number of
         relevant docs and an ordered list of search results.
         Input:
             query - string.
         Output:
-            A tuple containing the number of relevant search results, and 
-            a list of tweet_ids where the first element is the most relavant 
+            A tuple containing the number of relevant search results, and
+            a list of tweet_ids where the first element is the most relavant
             and the last is the least relevant result.
         """
         if self._indexer.inverted_idx == None:
@@ -113,41 +114,3 @@ class SearchEngine:
             return
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
-
-    def main(self, corpus_path, output_path, stemming, queries, num_docs_to_retrieve):
-        config = self._config
-        config.set_corpusPath(corpus_path)
-        config.set_savedFileMainFolder(output_path)
-        config.set_toStem(stemming)
-        self.load_precomputed_model()#TODO-change dir
-        vectorModel = self._model
-        start = timer()
-        print("----started parsing and indexer----")
-        self.build_index_from_parquet('inverted_idx')
-        end = timer()
-        print("Process ends..")
-        print(timedelta(seconds=end - start))
-        k = num_docs_to_retrieve
-        inverted_index = self.load_index('inverted_idx')
-        import csv
-        with open('queries_output.csv', 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(["query", "tweet", "Rank"])
-            if not isinstance(queries, list):
-                try:
-                    f = open(queries, "r+", encoding='utf-8')
-                    # queries = f.read()
-                    queries = f.readlines()
-                    f.close()
-                except Exception:
-                    raise
-                    print("fail in reading queries file")
-                    # see numbers for the document file
-                i = 0
-                for querie in queries:
-                    print("querie number" + str(i))
-                    print(querie)
-                    i += 1
-                    for doc_tuple in self.search(querie):
-                        print('Tweet id: {}, Score: {}'.format(doc_tuple[1], doc_tuple[0]))
-                        writer.writerow([i, doc_tuple[1], doc_tuple[0]])
