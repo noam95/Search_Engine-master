@@ -78,7 +78,7 @@ def map(df):
 def createDF(retunedDoc, benchMark):#return df with lable from benchmark and number of relevant dict
 
     colnames_benchmark = ['query', 'tweet', 'y_true']
-    colnames_engineOutpot = ['query','tweet','Rank']
+    colnames_engineOutpot = ['query','tweet']
     benchMark_data = pandas.read_csv(benchMark, names=colnames_benchmark)
     engine_output_date = pandas.read_csv(retunedDoc, names=colnames_engineOutpot)
 
@@ -130,4 +130,4 @@ def calculate_engine_officiant(engine_output, benchmark):
         r.writerows(df.values.tolist())
     return pression_val, recall_val, map_val
 
-#calculate_engine_officiant('C:/Users/User/PycharmProjects/Search_Engine_AN/queries_output.csv','C:/Users/User/PycharmProjects/Search_Engine_AN/data/benchmark_lbls_train.csv')
+calculate_engine_officiant('C:/Users/User/PycharmProjects/Search_Engine_AN/queries_output.csv','C:/Users/User/PycharmProjects/Search_Engine_AN/data/benchmark_lbls_train.csv')

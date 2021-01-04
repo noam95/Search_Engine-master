@@ -146,8 +146,12 @@ if __name__ == '__main__':
                 # test that MAP > 0
                 if q_results_labeled is not None:
                     # logging.debug(q_results_labeled.head())
+                    #results_recall = metrics.recall(q_results_labeled)
+                    results_precision = metrics.precision(q_results_labeled)
                     results_map = metrics.map(q_results_labeled)
                     logging.debug(f"{engine_module} results have MAP value of {results_map}.")
+                    #logging.debug(f"{engine_module} results have recall value of {results_recall}.")
+                    logging.debug(f"{engine_module} results have presision value of {results_precision}.")
                     if results_map <= 0 or results_map > 1:
                         logging.error(f'{engine_module} results MAP value is out of range (0,1).')
 

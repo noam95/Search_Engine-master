@@ -23,11 +23,12 @@ class SearchEngine:
     # You can change the internal implementation, but you must have a parser and an indexer.
     def __init__(self, config=None):
         self._config = config
-        if config.toStem:
+        if config!=None and config.toStem :
             self._parser = Parse_stem()
         else:
+            self._config = ConfigClass()
             self._parser = Parse()
-        self._indexer = Indexer(config)
+        self._indexer = Indexer(self._config)
         self._model = None
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -133,7 +134,7 @@ class SearchEngine:
         import csv
         with open('queries_output.csv', 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["query", "tweet", "Rank"])
+            writer.writerow(["query", "tweet"])
             if not isinstance(queries, list):
                 try:
                     f = open(queries, "r+", encoding='utf-8')
@@ -149,6 +150,9 @@ class SearchEngine:
                     print("querie number" + str(i))
                     print(querie)
                     i += 1
-                    for doc_tuple in self.search(querie):
-                        print('Tweet id: {}, Score: {}'.format(doc_tuple[1], doc_tuple[0]))
-                        writer.writerow([i, doc_tuple[1], doc_tuple[0]])
+                    res = self.search(querie)
+                    for s in range(num_docs_to_retrieve):
+                        writer.writerow([i,res[1][s]])
+                    # for doc in res[1]:
+                    #     #print('Tweet id: {}, Score: {}'.format(doc_tuple[1], doc_tuple[0]))
+                    #     writer.writerow([i, doc])
