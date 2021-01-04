@@ -7,7 +7,7 @@ from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
-from searcher import Searcher
+from searcher_SpellingCorrection import Searcher
 from timeit import default_timer as timer
 from datetime import timedelta
 from gensim.models import KeyedVectors
