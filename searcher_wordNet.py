@@ -38,7 +38,8 @@ class Searcher:
         """
         p = self._parser
         start_qury = timer()
-        query_as_list = p.parse_sentence(query)  # returnes a list of words
+        query_as_list = p.parse_sentence(query)
+        query_as_list = self.expand_query_wordnet(query_as_list)# returnes a list of words
         advance_query = {}  # key- term. value - tf of the term in qurey
         start_searcher = timer()
         relevant_docs = self._relevant_docs_from_posting(query_as_list)
@@ -83,11 +84,10 @@ class Searcher:
         relevant_docs = {}
         # if self.config.toStem:
         #     sttemer = PorterStemmer()
-        query = self.expand_query_wordnet(query_as_list)
 
         # if self.config.toStem:
         #     sttemer = PorterStemmer()
-        for term in query:
+        for term in query_as_list:
             # if self.config.toStem and " " not in term:#no stem for name and identity
             #     term = sttemer.stem(term)
             try:#collecting term data
@@ -136,13 +136,17 @@ class Searcher:
         return docs_dict
 
     def expand_query_wordnet(self, query):
+        expand_set = set()
         for term in query:
-            #sys3 = wordnet.synsets("good")
-            # for sys in wordnet.synset(term):
-            #     for lemma in sys.lemmas():
-            #         second = wordnet.synsets(lemma.name())
-            #         # sim = sys.wup_similarity(second)
-            #         query.append(lemma.name())
-            rer = wordnet.synset(term)
-            query.append(rer)
-        return query
+            for sys in wordnet.synsets(term):
+                for lemma in sys.lemmas():
+                    if lemma.name().__contains__("_"):
+                        splited = lemma.name().split("_")
+                        [expand_set.add(word) for word in splited]
+                    else:
+                        expand_set.add(lemma.name())
+        # [query.append(term) for term in expand_set if term not in query]
+        # for opt in expand_set:
+        #     query.append(opt)
+        checks_if_in_dict = [t for t in expand_set if t in self._indexer.inverted_idx]
+        return list(checks_if_in_dict)
