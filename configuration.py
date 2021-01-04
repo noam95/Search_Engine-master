@@ -19,7 +19,6 @@ class ConfigClass:
         self.saveFilesWithStem = self.savedFileMainFolder + "/WithStem"
         self.saveFilesWithoutStem = self.savedFileMainFolder + "/WithoutStem"
         self.toStem = False
-        self.spellingCorrection = False
         self.oneFile = True
 
 

@@ -102,6 +102,7 @@ class Parse_ADV(Parse):
                 if len(var) > 1:#cut all the term size les than one exept numbers
                     if var.lower() in self.corona_list:#handle virus corona terms
                         var = 'coronavirus'
+                        continue
                     else:
                         var = self.cut_end_begining(var)
                     tokenized_text_fixed.append(var)

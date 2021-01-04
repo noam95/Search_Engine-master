@@ -3,7 +3,8 @@ from datetime import timedelta
 from timeit import default_timer as timer
 
 from nltk.corpus import wordnet
-
+# import nltk
+# nltk.download('wordnet')
 from ranker_tf_idf import Ranker
 import utils
 
@@ -19,7 +20,6 @@ class Searcher:
         self._parser = parser
         self._indexer = indexer
         self._renker = Ranker()
-        #self._ranker = indexer.config.getRanker #TODO
         self._model = model
 
     # DO NOT MODIFY THIS SIGNATURE
