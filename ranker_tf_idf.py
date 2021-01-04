@@ -52,7 +52,10 @@ class Ranker:
             doc_len = math.pow(doc_weight,2)
             mechane = math.sqrt(q_len*doc_len)
             # mul = doc_len * q_len
-            cosine = inner_prodect/mechane
+            if mechane != 0:
+                cosine = inner_prodect/mechane
+            else:
+                cosine = 0
             tup = (cosine, doc)#similarity, doc_id
             cosine_list.append(tup)
         rank_list_sorted = sorted(cosine_list, reverse=True)
