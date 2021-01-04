@@ -104,7 +104,7 @@ class Searcher:
                     origin_lines = posting_dict[file_name]
                     relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
             except Exception:
-                raise
+                pass
         return relevant_docs #dict Keys- Term, Values- list of docs
 
 
