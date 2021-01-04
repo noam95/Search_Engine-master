@@ -136,8 +136,9 @@ class Searcher:
 
         # find those words that may be misspelled
         misspelled = spell.unknown(query)
-        fixed = []
+        for word in misspelled:
+            query.remove(misspelled)
         for word in misspelled:
             # Get the one `most likely` answer
-            fixed.append(spell.correction(word))
+            query.append(spell.correction(word))
 

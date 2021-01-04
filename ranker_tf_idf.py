@@ -1,22 +1,27 @@
 import utils
 import math
+from datetime import timedelta
+
+from timeit import default_timer as timer
+from numpy.dual import norm
+import numpy
 
 class Ranker:
+    def __init__(self):
+        pass
 
-
-    def rank_relevant_doc(relevant_doc, qurey, config):
+    @staticmethod
+    def rank_relevant_docs(relevant_doc, qurey, indexer, model_vector = None, k=None):
         """
         This function provides rank for each relevant document and sorts them by their scores.
         The current score considers solely the number of terms shared by the tweet (full_text) and query.
-        :param relevant_doc: dictionary of documents that contains at least one term from the query.
+        :param k: number of most relevant docs to return, default to everything.
+        :param relevant_docs: dictionary of documents that contains at least one term from the query.
         :return: sorted list of documents by score
         """
-        if config.toStem:
-            documents_data = utils.load_obj("documents_stem")#keys- document id. values- [max freq term, number of difrent words, number of words]
-            inverted_index = utils.load_obj("inverted_idx_stem")#keys-terms. values- [line number in post file,number of documents appears in,total appearance in corpus]
-        else:
-            documents_data = utils.load_obj("documents")#keys- document id. values- [max freq term, number of difrent words, number of words]
-            inverted_index = utils.load_obj("inverted_idx")
+        config = indexer.config
+        inverted_index = indexer.inverted_idx#keys-terms. values- [line number in post file,number of documents appears in,total appearance in corpus]
+        documents_data = indexer.documents_data#keys- document id. values- [max freq term, number of difrent words, number of words]
         idf_dict = {}
         docs_dict = {}
         tf_idf_q = 0
@@ -46,13 +51,6 @@ class Ranker:
             cosine = float(inner_prodect/mul)
             tup = (cosine, doc)#similarity, doc_id
             cosine_list.append(tup)
-        return cosine_list
-
-    def retrieve_top_k(sorted_relevant_doc, k=1):
-        """
-        return a list of top K tweets based on their ranking from highest to lowest
-        :param sorted_relevant_doc: list of all candidates docs.
-        :param k: Number of top document to return
-        :return: list of relevant document
-        """
-        return sorted_relevant_doc[:k]
+        if k is not None:
+            cosine_list = cosine_list[:k]
+        return [d[1] for d in cosine_list]#TODO debug here
