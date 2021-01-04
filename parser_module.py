@@ -107,14 +107,14 @@ class Parse:
             for var in tokenized_text:#clean end and begining
                 if len(var) > 1:#cut all the term size les than one exept numbers
                     if var.lower() in self.corona_list:#handle virus corona terms
+                        continue #TODO:advance
                         var = 'coronavirus'
                     else:
                         var = self.cut_end_begining(var)
                     tokenized_text_fixed.append(var)
                 elif self.is_number(var):
                     tokenized_text_fixed.append(var)
-            if ConfigClass.get_spellingCorrection:
-                x=1#TODO:conplate case spelling correction
+
             return tokenized_text_fixed
         except Exception:
             raise

@@ -105,7 +105,7 @@ class Searcher:
                     origin_lines = posting_dict[file_name]
                     relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
             except Exception:
-                raise
+                pass#no words in dict
         return relevant_docs #dict Keys- Term, Values- list of docs
 
 
@@ -137,8 +137,11 @@ class Searcher:
 
         # find those words that may be misspelled
         misspelled = spell.unknown(query)
-        for word in misspelled:
-            query.remove(misspelled)
+        try:
+            for word in misspelled:
+                query.remove(word)
+        except:
+            pass
         for word in misspelled:
             # Get the one `most likely` answer
             query.append(spell.correction(word))
