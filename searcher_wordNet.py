@@ -2,6 +2,8 @@ from datetime import timedelta
 
 from timeit import default_timer as timer
 
+from nltk.corpus import wordnet
+
 from ranker_tf_idf import Ranker
 import utils
 
@@ -77,8 +79,11 @@ class Searcher:
         :param query_as_list: parsed query tokens
         :return: dictionary of relevant documents mapping doc_id to document frequency.
         """
+
         relevant_docs = {}
-        query = query_as_list
+        # if self.config.toStem:
+        #     sttemer = PorterStemmer()
+        query = self.expand_query_wordnet(query_as_list)
 
         # if self.config.toStem:
         #     sttemer = PorterStemmer()
@@ -129,3 +134,15 @@ class Searcher:
                 else:
                     docs_dict[doc_id] = (1, [(term, doc_ditails[0])])
         return docs_dict
+
+    def expand_query_wordnet(self, query):
+        for term in query:
+            #sys3 = wordnet.synsets("good")
+            # for sys in wordnet.synset(term):
+            #     for lemma in sys.lemmas():
+            #         second = wordnet.synsets(lemma.name())
+            #         # sim = sys.wup_similarity(second)
+            #         query.append(lemma.name())
+            rer = wordnet.synset(term)
+            query.append(rer)
+        return query
