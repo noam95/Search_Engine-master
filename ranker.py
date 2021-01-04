@@ -3,9 +3,9 @@
 import math
 from datetime import timedelta
 
-from nltk.sentiment.util import timer
+from timeit import default_timer as timer
 from numpy.dual import norm
-from pandas import np
+import numpy
 
 import utils
 
@@ -28,24 +28,18 @@ class Ranker:
         # print("start ranking")
         start_rank = timer()
         dict_doc = {}  # key - doc_id . value - sigma (tf*idf*vector_term)
-        if config.toStem:
-            documents_data = utils.load_obj(
-                "documents_stem")  # keys- document id. values- [max freq term, number of difrent words, number of words]
-            inverted_index = utils.load_obj(
-                "inverted_idx_stem")  # keys-terms. values- [line number in post file,number of documents appears in,total appearance in corpus]
-        else:
-            documents_data = utils.load_obj(
-                "documents")  # keys- document id. values- [max freq term, number of difrent words, number of words]
-            inverted_index = utils.load_obj("inverted_idx")
+
+        inverted_index = indexer.inverted_idx#keys-terms. values- [line number in post file,number of documents appears in,total appearance in corpus]
+        documents_data = indexer.documents_data#keys- document id. values- [max freq term, number of difrent words, number of words]
         temp_list = []
         idf_dict = {}  # key= term, value= idf
-        vector_query = np.zeros(300)
+        vector_query = numpy.zeros(300)
         dict_vector_model = {}  # key = term . value- vector represantion from model
         for term in qurey:
-            if term in model_vector.model.vocab:
-                term_vector = model_vector.model.wv.get_vector(term)
+            if term in model_vector.vocab:
+                term_vector = model_vector.wv.get_vector(term)
             else:  # not exist in the model
-                term_vector = np.zeros(300)
+                term_vector = numpy.zeros(300)
             dict_vector_model[term] = term_vector  # keeping the vector of the term
             tf_q = qurey[term]
             # idf_query
@@ -71,22 +65,22 @@ class Ranker:
                 if doc_id in dict_doc.keys():
                     dict_doc[doc_id] += tf_idf_vector
                 else:
-                    new_vec = np.zeros(300)
+                    new_vec = numpy.zeros(300)
                     dict_doc[doc_id] = new_vec
                     dict_doc[doc_id] += tf_idf_vector
         end_calculating_vectors = timer()
         print(str(timedelta(seconds=end_calculating_vectors - start_calculating_vectors)) + "calculatingvectors time")
         rank_cosine = []
         temp_vec = []
-        cosine_sim = np.zeros(300)
+        cosine_sim = numpy.zeros(300)
         start_calculate_cosim = timer()
         for doc in dict_doc.items():
             doc_as_vec = doc[1]
-            if np.all(doc_as_vec) == 0 or np.all(vector_query) == 0:  # if the doc vector is zeros.
+            if numpy.all(doc_as_vec) == 0 or numpy.all(vector_query) == 0:  # if the doc vector is zeros.
                 rank_tuple = (0, doc[0], relevant_doc[doc[0]][0])
                 rank_cosine.append(rank_tuple)
             else:
-                dot = np.dot(vector_query, doc_as_vec)
+                dot = numpy.dot(vector_query, doc_as_vec)
                 normlize = norm(vector_query) * norm(doc_as_vec)
                 cosine_sim = dot / normlize
                 rank_tuple = (cosine_sim, doc[0],
@@ -102,5 +96,5 @@ class Ranker:
 
         if k is not None:
             rank_list_sorted = rank_list_sorted[:k]
-        return [d[0] for d in rank_list_sorted]#TODO debug here
+        return [d[1] for d in rank_list_sorted]#TODO debug here
 

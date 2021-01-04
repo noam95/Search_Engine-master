@@ -10,6 +10,8 @@ from indexer import Indexer
 from searcher import Searcher
 from timeit import default_timer as timer
 from datetime import timedelta
+from gensim.models import KeyedVectors
+
 import utils
 
 
@@ -83,13 +85,14 @@ class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
-    def load_precomputed_model(self, model_dir=None):
+    def load_precomputed_model(self, model_dir=None):#TODO implement
         """
         Loads a pre-computed model (or models) so we can answer queries.
         This is where you would load models like word2vec, LSI, LDA, etc. and 
         assign to self._model, which is passed on to the searcher at query time.
         """
-        pass
+        self._model = KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin", binary=True)
+
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -115,7 +118,7 @@ class SearchEngine:
         config.set_corpusPath(corpus_path)
         config.set_savedFileMainFolder(output_path)
         config.set_toStem(stemming)
-
+        self.load_precomputed_model()#TODO-change dir
         vectorModel = self._model
         start = timer()
         print("----started parsing and indexer----")
