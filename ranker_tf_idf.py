@@ -47,10 +47,12 @@ class Ranker:
         cosine_list = []
         for doc in docs_dict:
             inner_prodect = docs_dict[doc] * tf_idf_q
-            doc_len = documents_data[doc][2] #lenght of doc
-            q_len = len(qurey)
-            mul = doc_len * q_len
-            cosine = inner_prodect/mul
+            doc_weight = documents_data[doc][3] #lenght of doc
+            q_len = math.pow(tf_idf_q, 2)
+            doc_len = math.pow(doc_weight,2)
+            mechane = math.sqrt(q_len*doc_len)
+            # mul = doc_len * q_len
+            cosine = inner_prodect/mechane
             tup = (cosine, doc)#similarity, doc_id
             cosine_list.append(tup)
         rank_list_sorted = sorted(cosine_list, reverse=True)

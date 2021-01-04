@@ -1,4 +1,5 @@
 # DO NOT MODIFY CLASS NAME
+import math
 import pickle
 
 import utils
@@ -11,7 +12,7 @@ class Indexer:
         self.inverted_idx = {}#keys-terms. values- [(post file name, post file line),number of documents appears in,total appearance in corpus]
         self.postingDict = {} #keys-posting files names. values- lists of lines(lists) each line represent term
         self.header_posting_files = {} #keys-posting files name. values-line number of the next term
-        self.documents_data = {} #keys- document id. values- [max freq term, number of difrent words, number of words]
+        self.documents_data = {} #keys- document id. values- [max freq term, number of difrent words, number of words, weight]
         self.config = config
         self.name_and_entity = {} #keys- name_and_entitys, values- data to addterm function
         self.name_of_files = {} #keys- term first letter 't', values- number
@@ -38,11 +39,11 @@ class Indexer:
         if dict_length > 0:
             sorted(document_dictionary.items(), key=lambda x: x[1])
             max_freq_term = list(document_dictionary.keys())[0]
-            total_words =  len(document.full_text.split(" "))
+            total_words = len(document.full_text.split(" "))
         else:
             max_freq_term = " "
             total_words =  len(document.full_text.split(" "))
-        self.documents_data[d_id] =  [max_freq_term,dict_length,total_words ]
+        self.documents_data[d_id] = [max_freq_term,dict_length,total_words,0 ]
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -241,4 +242,20 @@ class Indexer:
             number_to_add = 0
         self.name_of_files[first_letter] = number_to_add+1
         return first_letter + str(number_to_add)
+
+    def calculationSummerize(self):
+        corpus_len = len(self.documents_data.keys())
+        for term in self.inverted_idx.keys():
+            #inverted index = keys-terms. values- [(post file name, post file line),number of documents appears in,total appearance in corpus]
+            #posting dict =  keys-posting files names. values- lists of lines(lists) each line represent term
+            #documents_data = keys- document id. values- [max freq term, number of difrent words, number of words, weight]
+            post_file_name = self.inverted_idx[term][0][0]
+            post_file_line = self.inverted_idx[term][0][1]
+            df = self.inverted_idx[term][1] #number of ducuments appears in
+            idf = math.log((corpus_len/df),2)
+            for terminDoc in self.postingDict[post_file_name][post_file_line]:
+                tf = (int(terminDoc[0])) / self.documents_data[terminDoc[1]][2] #number of appear /number of word in doc
+                self.documents_data[terminDoc[1]][3] += tf*idf
+
+
 

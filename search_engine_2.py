@@ -51,6 +51,7 @@ class SearchEngine:
                 number_of_documents += 1
                 # index the document data
                 self._indexer.add_new_doc(parsed_document)
+            self._indexer.calculationSummerize()
         else:
             r = ReadFile(corpus_path=config.get__corpusPath())
             for root, dirs, files in os.walk(config.get__corpusPath(), topdown=True):
