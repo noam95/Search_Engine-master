@@ -28,8 +28,9 @@ class Ranker:
         # print("start ranking")
         start_rank = timer()
         dict_doc = {}  # key - doc_id . value - sigma (tf*idf*vector_term)
-        inverted_index = indexer.inverted_idx
-        documents_data = indexer.documents_data
+
+        inverted_index = indexer.inverted_idx#keys-terms. values- [line number in post file,number of documents appears in,total appearance in corpus]
+        documents_data = indexer.documents_data#keys- document id. values- [max freq term, number of difrent words, number of words]
         temp_list = []
         idf_dict = {}  # key= term, value= idf
         vector_query = numpy.zeros(300)
