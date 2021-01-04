@@ -16,3 +16,8 @@ class ReadFile:
         full_path = os.path.join(self.corpus_path, file_name)
         df = pd.read_parquet(full_path, engine="pyarrow")
         return df.values.tolist()
+
+    def read_folder(self, root,file_name):
+        self.corpus_path = root
+        return self.read_file(file_name)
+

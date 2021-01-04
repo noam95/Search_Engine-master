@@ -1,3 +1,7 @@
+from datetime import timedelta
+
+from nltk.sentiment.util import timer
+
 from ranker import Ranker
 import utils
 
@@ -12,7 +16,8 @@ class Searcher:
     def __init__(self, parser, indexer, model=None):
         self._parser = parser
         self._indexer = indexer
-        self._ranker = Ranker()
+        self._renker = Ranker()
+        #self._ranker = indexer.config.getRanker #TODO
         self._model = model
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -29,12 +34,40 @@ class Searcher:
             a list of tweet_ids where the first element is the most relavant 
             and the last is the least relevant result.
         """
-        query_as_list = self._parser.parse_sentence(query)
-
+        p = self._parser
+        start_qury = timer()
+        query_as_list = p.parse_sentence(query)  # returnes a list of words
+        advance_query = {}  # key- term. value - tf of the term in qurey
+        start_searcher = timer()
         relevant_docs = self._relevant_docs_from_posting(query_as_list)
-        n_relevant = len(relevant_docs)
-        ranked_doc_ids = Ranker.rank_relevant_docs(relevant_docs)
-        return n_relevant, ranked_doc_ids
+
+        end_searcher = timer()
+        print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
+        for term in query_as_list:
+            if term in relevant_docs.keys():
+                advance_query[term] = query_as_list.count(term) / len(query_as_list)
+            elif term.lower() in relevant_docs.keys():
+                advance_query[term.lower()] = query_as_list.count(term) / len(query_as_list)
+        relevant_doc_dict = self.get_relevant_doc_dict(relevant_docs)  # key= doc_id, value= (num_of_terms appears_in_doc from qury, [(terms,num_of_term_appears)])
+        relevant_doc_dict = sorted(relevant_doc_dict.items(), key=lambda item: item[1][0], reverse=True)
+        relevant_doc_dict = dict(relevant_doc_dict[0:2000]) if len(relevant_doc_dict) > 2000 else dict(relevant_doc_dict)
+        # relevant_doc_dict = sorted(relevant_doc_dict.keys(), key=lambda x:x[0],reverse=True)
+        start_renking = timer()
+        if self._model != None:
+            ranked_docs = self._renker.rank_relevant_docs(relevant_doc_dict, advance_query,self._indexer,  self._model)
+        else:
+            ranked_docs = self._renker.rank_relevant_docs(relevant_doc_dict, advance_query,self._indexer)
+        end_qury = timer()
+        print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
+        print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
+
+        return len(relevant_docs) , ranked_docs
+        # query_as_list = self._parser.parse_sentence(query)
+        #
+        # relevant_docs = self._relevant_docs_from_posting(query_as_list)
+        # n_relevant = len(relevant_docs)
+        # ranked_doc_ids = Ranker.rank_relevant_docs(relevant_docs)
+        # return n_relevant, ranked_doc_ids
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
@@ -51,3 +84,25 @@ class Searcher:
                 df = relevant_docs.get(doc_id, 0)
                 relevant_docs[doc_id] = df + 1
         return relevant_docs
+
+    def get_relevant_doc_dict(self, relevant_docs):
+        docs_dict = {}# key= doc_id, value= (num_of_terms appears_in_doc from qury, [(terms,num_of_term_appears)])
+        #relevant_docs = dict- key=term, value= [(num_of_term_appears, dic_id),(num_of_term_appears, dic_id)]
+        for term in relevant_docs.keys():
+            for doc_ditails in relevant_docs[term]:
+                doc_id = doc_ditails[1]
+                if doc_id in docs_dict.keys():
+                    flag = False
+                    #clean double docs in corpus
+                    for term_in_doc in docs_dict[doc_id][1]:
+                        if term_in_doc[0] == term:
+                            flag = True
+                    #not same term in same doc
+                    if not flag:
+                        sum_terms = docs_dict[doc_id][0] + 1
+                        #details = docs_dict[doc_id]
+                        docs_dict[doc_id] = (sum_terms, docs_dict[doc_id][1] + [(term, doc_ditails[0])])
+                        #details1= docs_dict[doc_id]
+                else:
+                    docs_dict[doc_id] = (1, [(term, doc_ditails[0])])
+        return docs_dict
