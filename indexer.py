@@ -252,7 +252,7 @@ class Indexer:
             post_file_name = self.inverted_idx[term][0][0]
             post_file_line = self.inverted_idx[term][0][1]
             df = self.inverted_idx[term][1] #number of ducuments appears in
-            idf = math.log((corpus_len/df),2)
+            idf = math.log((corpus_len/df),10)#TODO
             for terminDoc in self.postingDict[post_file_name][post_file_line]:
                 tf = (int(terminDoc[0])) / self.documents_data[terminDoc[1]][2] #number of appear /number of word in doc
                 self.documents_data[terminDoc[1]][3] += tf*idf

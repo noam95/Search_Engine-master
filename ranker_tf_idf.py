@@ -62,6 +62,6 @@ class Ranker:
             tup = (calRank, doc)#similarity, doc_id
             cosine_list.append(tup)
         rank_list_sorted = sorted(cosine_list, reverse=True)
-        if k is not None:
-            rank_list_sorted = rank_list_sorted[:k]
+        # if k is not None:
+        #     rank_list_sorted = rank_list_sorted[:k]
         return [d[1] for d in rank_list_sorted]#TODO debug here

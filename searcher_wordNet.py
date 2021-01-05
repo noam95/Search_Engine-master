@@ -64,7 +64,7 @@ class Searcher:
         print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
         print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
 
-        return len(relevant_docs) , ranked_docs
+        return len(ranked_docs) , ranked_docs
         # query_as_list = self._parser.parse_sentence(query)
         #
         # relevant_docs = self._relevant_docs_from_posting(query_as_list)
