@@ -20,6 +20,7 @@ class ConfigClass:
         self.saveFilesWithoutStem = self.savedFileMainFolder + "/WithoutStem"
         self.toStem = False
         self.oneFile = True
+        self.cutFreqBy = 1000
 
 
         print('Project was created successfully..')
@@ -87,3 +88,9 @@ class ConfigClass:
 
     def get_download_model(self):
         return self._download_model
+
+    def get_cut_by(self):
+        return self.cutFreqBy
+
+    def set_cut_by(self,num):
+        self.cutFreqBy = num/6

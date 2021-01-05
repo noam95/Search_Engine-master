@@ -5,16 +5,16 @@ import pandas as pd
 from parser_module_stamming import Parse_stem
 from reader import ReadFile
 from configuration import ConfigClass
-from parser_module import Parse
+from parser_module_adv import Parse_ADV
 from indexer import Indexer
-from searcher import Searcher
+from searcher_word2vec import Searcher
 from timeit import default_timer as timer
 from datetime import timedelta
 from gensim.models import KeyedVectors
 
 import utils
 
-
+#word2vec
 
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
@@ -23,12 +23,11 @@ class SearchEngine:
     # You can change the internal implementation, but you must have a parser and an indexer.
     def __init__(self, config=None):
         self._config = config
-        if config!=None and config.toStem :
+        if config.toStem:
             self._parser = Parse_stem()
         else:
-            self._config = ConfigClass()
-            self._parser = Parse()
-        self._indexer = Indexer(self._config)
+            self._parser = Parse_ADV()
+        self._indexer = Indexer(config)
         self._model = None
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -90,24 +89,23 @@ class SearchEngine:
     def load_precomputed_model(self, model_dir=None):#TODO implement
         """
         Loads a pre-computed model (or models) so we can answer queries.
-        This is where you would load models like word2vec, LSI, LDA, etc. and 
+        This is where you would load models like word2vec, LSI, LDA, etc. and
         assign to self._model, which is passed on to the searcher at query time.
         """
-        pass
-        #self._model = KeyedVectors.load_word2vec_format('C:/Users/User/PycharmProjects/Search_Engine-master/GoogleNews-vectors-negative300.bin', binary=True)
+        self._model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
 
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def search(self, query):
-        """ 
-        Executes a query over an existing index and returns the number of 
+        """
+        Executes a query over an existing index and returns the number of
         relevant docs and an ordered list of search results.
         Input:
             query - string.
         Output:
-            A tuple containing the number of relevant search results, and 
-            a list of tweet_ids where the first element is the most relavant 
+            A tuple containing the number of relevant search results, and
+            a list of tweet_ids where the first element is the most relavant
             and the last is the least relevant result.
         """
         if self._indexer.inverted_idx == None:
@@ -116,43 +114,3 @@ class SearchEngine:
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
 
-    def main(self, corpus_path, output_path, stemming, queries, num_docs_to_retrieve):
-        config = self._config
-        config.set_corpusPath(corpus_path)
-        config.set_savedFileMainFolder(output_path)
-        config.set_toStem(stemming)
-        self.load_precomputed_model()#TODO-change dir
-        vectorModel = self._model
-        start = timer()
-        print("----started parsing and indexer----")
-        self.build_index_from_parquet('inverted_idx')
-        end = timer()
-        print("Process ends..")
-        print(timedelta(seconds=end - start))
-        k = num_docs_to_retrieve
-        inverted_index = self.load_index('inverted_idx')
-        import csv
-        with open('queries_output.csv', 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(["query", "tweet"])
-            if not isinstance(queries, list):
-                try:
-                    f = open(queries, "r+", encoding='utf-8')
-                    # queries = f.read()
-                    queries = f.readlines()
-                    f.close()
-                except Exception:
-                    raise
-                    print("fail in reading queries file")
-                    # see numbers for the document file
-                i = 0
-                for querie in queries:
-                    print("querie number" + str(i))
-                    print(querie)
-                    i += 1
-                    res = self.search(querie)
-                    for s in range(num_docs_to_retrieve):
-                        writer.writerow([i,res[1][s]])
-                    # for doc in res[1]:
-                    #     #print('Tweet id: {}, Score: {}'.format(doc_tuple[1], doc_tuple[0]))
-                    #     writer.writerow([i, doc])

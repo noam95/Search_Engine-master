@@ -5,8 +5,8 @@ import pandas as pd
 from parser_module_stamming import Parse_stem
 from reader import ReadFile
 from configuration import ConfigClass
+from parser_module_adv import Parse
 from parser_module import Parse
-from parser_module_adv import Parse_ADV
 from indexer import Indexer
 from searcher_SpellingCorrection import Searcher
 from timeit import default_timer as timer

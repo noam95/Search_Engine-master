@@ -60,8 +60,10 @@ class Ranker:
             dot = inner_prodect
             calRank = (0*dot) + (1* cosine)
             tup = (calRank, doc)#similarity, doc_id
+            if calRank < 0.15:#TODO
+                continue
             cosine_list.append(tup)
         rank_list_sorted = sorted(cosine_list, reverse=True)
-        # if k is not None:
-        #     rank_list_sorted = rank_list_sorted[:k]
+        if k is not None:
+            rank_list_sorted = rank_list_sorted[:k]
         return [d[1] for d in rank_list_sorted]#TODO debug here
