@@ -68,12 +68,13 @@ def map(df):
         :return: Double: the average precision of the df
     """
     acc = 0
-    split_df = [pd.DataFrame(y).reset_index() for x, y in df.groupby('query', as_index=True)]
+    split_df = [pd.DataFrame(y).reset_index() for x, y in df.groupby('query', as_index=True) if len(y)>0]
     indices = [sdf.index[sdf['y_true'] == 1].tolist() for sdf in split_df]
     for i, indexes in enumerate(indices):
-        pres = [precision_at_n(split_df[i], i + 1, index + 1) for index in indexes]
+        pres = [precision_at_n(split_df[i], split_df[i]['query'][0], index + 1) for index in indexes]
         acc += reduce(lambda a, b: a + b, pres) / len(indexes) if len(pres) > 0 else 0
     return acc / len(split_df)
+
 
 def createDF(retunedDoc, benchMark):#return df with lable from benchmark and number of relevant dict
 
@@ -130,4 +131,4 @@ def calculate_engine_officiant(engine_output, benchmark):
         r.writerows(df.values.tolist())
     return pression_val, recall_val, map_val
 
-calculate_engine_officiant('C:/Users/User/PycharmProjects/Search_Engine_AN/queries_output.csv','C:/Users/User/PycharmProjects/Search_Engine_AN/data/benchmark_lbls_train.csv')
+#calculate_engine_officiant('C:/Users/User/PycharmProjects/Search_Engine_AN/queries_output.csv','C:/Users/User/PycharmProjects/Search_Engine_AN/data/benchmark_lbls_train.csv')
