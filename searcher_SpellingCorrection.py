@@ -137,11 +137,11 @@ class Searcher:
 
         # find those words that may be misspelled
         misspelled = spell.unknown(query)
-        try:
-            for word in misspelled:
-                query.remove(word)
-        except:
-            pass
+        # try:
+        #     for word in misspelled:
+        #         query.remove(word)
+        # except:
+        #     pass
         for word in misspelled:
             # Get the one `most likely` answer
             query.append(spell.correction(word))
