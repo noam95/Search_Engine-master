@@ -12,7 +12,7 @@ from nltk import PorterStemmer
 class Parse:
 
     def __init__(self):
-        self.stop_words = stopwords.words('english')
+        self.stop_words = [] #TODO stopwords.words('english')
         self.additional_stop_words = ['RT', 'tweet', 'www', 'http', 'https','WWW']
         self.corona_list = ['corona', 'coronavirus', 'covid','covid19', 'covid 19', 'corona virus', 'virus corona', 'corona_virus', 'virus_corona']
 
@@ -199,6 +199,7 @@ class Parse:
         return w
 
     def parse_date(self,tweet_date):
+        #pass
         try:
             date_split = tweet_date.split(" ")
             token_list = []
@@ -288,6 +289,7 @@ class Parse:
             #print("fail in cleanNumber")
 
     def UrlHandle(self, word):
+        #pass
         try:
             to_return = []
             url_split = urlparse(word)
