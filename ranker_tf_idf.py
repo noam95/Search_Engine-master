@@ -55,9 +55,11 @@ class Ranker:
             if mechane != 0:
                 cosine = inner_prodect/mechane
             else:
-                cosine = 0.5
+                cosine = 0
             # cosine = inner_prodect / mechane
-            tup = (cosine, doc)#similarity, doc_id
+            dot = inner_prodect
+            calRank = (0*dot) + (1* cosine)
+            tup = (calRank, doc)#similarity, doc_id
             cosine_list.append(tup)
         rank_list_sorted = sorted(cosine_list, reverse=True)
         if k is not None:
