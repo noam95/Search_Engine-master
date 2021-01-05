@@ -19,7 +19,7 @@ class ConfigClass:
         self.saveFilesWithStem = self.savedFileMainFolder + "/WithStem"
         self.saveFilesWithoutStem = self.savedFileMainFolder + "/WithoutStem"
         self.toStem = False
-        self.oneFile = False
+        self.oneFile = True
 
 
         print('Project was created successfully..')
