@@ -11,7 +11,7 @@ import utils
 
 
 class Ranker:
-    def __init__(self):
+    def _init_(self):
         pass
 
     @staticmethod
@@ -81,20 +81,28 @@ class Ranker:
                 rank_cosine.append(rank_tuple)
             else:
                 dot = numpy.dot(vector_query, doc_as_vec)
+                test_norm = norm(vector_query)
+                doc_weight = math.sqrt(float(documents_data[doc[0]][3]))
+                # doc_weight_norm = doc_weight / documents_data[doc[0]][2]
+                #mechane = test_norm * doc_weight
+                #cosine = dot / mechane
                 normlize = norm(vector_query) * norm(doc_as_vec)
-                cosine_sim = dot / normlize
-                rank_tuple = (cosine_sim, doc[0],
-                              relevant_doc[doc[0]][0])  # cosine_similarity result, doc_id, number of common word withw
+                cosine_sim = (dot / (normlize * doc_weight))
+                #cos = (cosine_sim * 0.7) + (0.3 * dot) #0.707
+                rank_tuple = (cosine_sim, doc[0], relevant_doc[doc[0]][0])  # cosine_similarity result, doc_id, number of common word withw
+                if cosine_sim < 0.33:#TODO
+                    continue
                 rank_cosine.append(rank_tuple)
         end_calculate_cosim = timer()
         print(str(timedelta(seconds=end_calculate_cosim - start_calculate_cosim)) + "calculate_cosim time")
         # if rank_cosine == []:
-        #     return rank_cosine
-        rank_list_sorted = sorted(rank_cosine, reverse=True)
+        #     return rank_cosine, key=lambda item: item[0]
+
+        rank_list_sorted = sorted(rank_cosine,  reverse=True)
         end_rank = timer()
+
         # print("finished rank at {}".format(timedelta(seconds=end_rank-start_rank)))
 
         if k is not None:
             rank_list_sorted = rank_list_sorted[:k]
         return [d[1] for d in rank_list_sorted]#TODO debug here
-

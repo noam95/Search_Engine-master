@@ -245,6 +245,7 @@ class Indexer:
 
     def calculationSummerize(self):
         corpus_len = len(self.documents_data.keys())
+        self.config.set_cut_by(corpus_len)
         for term in self.inverted_idx.keys():
             #inverted index = keys-terms. values- [(post file name, post file line),number of documents appears in,total appearance in corpus]
             #posting dict =  keys-posting files names. values- lists of lines(lists) each line represent term
