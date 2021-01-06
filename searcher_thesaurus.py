@@ -1,13 +1,10 @@
 from datetime import timedelta
 
 from timeit import default_timer as timer
-
-from nltk.corpus import wordnet
-# import nltk
-# nltk.download('wordnet')
 from ranker_tf_idf import Ranker
 import utils
 
+from nltk.corpus import lin_thesaurus as thesaurus
 
 # DO NOT MODIFY CLASS NAME
 class Searcher:
@@ -39,7 +36,9 @@ class Searcher:
         p = self._parser
         start_qury = timer()
         query_as_list = p.parse_sentence(query)
-        query_as_list = self.expand_query_wordnet(query_as_list)# returnes a list of words
+        # query_as_list = self.expand_query_wordnet(query_as_list)# returnes a list of words
+        query_syns = self.expand_query_wordnet(query_as_list)
+        [query_as_list.append(term) for term in query_syns]
         advance_query = {}  # key- term. value - tf of the term in qurey
         start_searcher = timer()
         relevant_docs = self._relevant_docs_from_posting(query_as_list)
@@ -48,9 +47,15 @@ class Searcher:
         print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
         for term in query_as_list:
             if term in relevant_docs.keys():
-                advance_query[term] = query_as_list.count(term) / len(query_as_list)
+                if term in query_syns:
+                    advance_query[term] = (query_as_list.count(term) / len(query_as_list)) * 0.2
+                else:
+                    advance_query[term] = query_as_list.count(term) / len(query_as_list)
             elif term.lower() in relevant_docs.keys():
-                advance_query[term.lower()] = query_as_list.count(term) / len(query_as_list)
+                if term in query_syns:
+                    advance_query[term.lower()] = (query_as_list.count(term) / len(query_as_list)) * 0.2
+                else:
+                    advance_query[term.lower()] = query_as_list.count(term) / len(query_as_list)
         relevant_doc_dict = self.get_relevant_doc_dict(relevant_docs)  # key= doc_id, value= (num_of_terms appears_in_doc from qury, [(terms,num_of_term_appears)])
         relevant_doc_dict = sorted(relevant_doc_dict.items(), key=lambda item: item[1][0], reverse=True)
         relevant_doc_dict = dict(relevant_doc_dict[0:2000]) if len(relevant_doc_dict) > 2000 else dict(relevant_doc_dict)
@@ -105,11 +110,14 @@ class Searcher:
                     relevant_docs[term] = original_term_data
                 except:
                     # lower case
-                    term_data = inverted_index[term.lower()]
-                    term_line_in_posting = term_data[0][1]
-                    file_name = term_data[0][0]
-                    origin_lines = posting_dict[file_name]
-                    relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
+                    try:
+                        term_data = inverted_index[term.lower()]
+                        term_line_in_posting = term_data[0][1]
+                        file_name = term_data[0][0]
+                        origin_lines = posting_dict[file_name]
+                        relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
+                    except:
+                        pass
             except Exception:
                 raise
         return relevant_docs #dict Keys- Term, Values- list of docs
@@ -140,20 +148,9 @@ class Searcher:
     def expand_query_wordnet(self, query):
         expand_set = set()
         for term in query:
-            for sys in wordnet.synsets(term):
-                for lemma in sys.lemmas():
-                    if lemma.name().__contains__("_"):
-                        # splited = lemma.name().split("_")
-                        # [expand_set.add(word) for word in splited]
-                        continue
-                    else:
-                        expand_set.add(lemma.name())
-                        break
+            sys_list = list(thesaurus.synonyms(term, fileid="simN.lsp"))
+            if len(sys_list) > 0 and sys_list[0] not in query:
+                expand_set.add(sys_list[0])
 
-        [query.append(term) for term in expand_set if term not in query]
-        # [query.append(term) for term in expand_set if term not in query]
-
-        # for opt in expand_set:
-        #     query.append(opt)
-        # checks_if_in_dict = [t for t in expand_set if t in self._indexer.inverted_idx]
-        return list(query)
+        # [query.append(term) for term in expand_set]
+        return list(expand_set)
