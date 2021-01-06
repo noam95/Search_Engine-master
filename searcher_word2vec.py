@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from timeit import default_timer as timer
 
+from spellchecker import SpellChecker
 
 from ranker_word2vec import Ranker
 import utils
@@ -78,7 +79,8 @@ class Searcher:
         :return: dictionary of relevant documents mapping doc_id to document frequency.
         """
         relevant_docs = {}
-        query = query_as_list
+        query = self.fix_query_spelling(query_as_list)
+        # query = query_as_list
         # if self.config.toStem:
         #     sttemer = PorterStemmer()
         for term in query:
@@ -89,6 +91,10 @@ class Searcher:
                 inverted_index = self._indexer.inverted_idx
                 posting_dict = self._indexer.postingDict
                 try:
+                    # if inverted_index[term][1]<0:#TODO
+                    #     continue
+                    if inverted_index[term][1] > self._indexer.config.get_cut_by()*4:  # TODO
+                        continue
                     term_data = inverted_index[term]
                     term_line_in_posting = term_data[0][1]
                     file_name = term_data[0][0]
@@ -128,3 +134,20 @@ class Searcher:
                 else:
                     docs_dict[doc_id] = (1, [(term, doc_ditails[0])])
         return docs_dict
+
+    def fix_query_spelling(self, query):
+
+        spell = SpellChecker()
+
+        # find those words that may be misspelled
+        misspelled = spell.unknown(query)
+        # try:
+        #     for word in misspelled:
+        #         query.remove(word)
+        # except:
+        #     pass
+        for word in misspelled:
+            # Get the one `most likely` answer
+            query.append(spell.correction(word))
+        return query
+

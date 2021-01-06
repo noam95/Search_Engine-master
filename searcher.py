@@ -90,6 +90,8 @@ class Searcher:
                 inverted_index = self._indexer.inverted_idx
                 posting_dict = self._indexer.postingDict
                 try:
+                    if inverted_index[term][1] > self._indexer.config.get_cut_by():  # TODO
+                        continue
                     term_data = inverted_index[term]
                     term_line_in_posting = term_data[0][1]
                     file_name = term_data[0][0]

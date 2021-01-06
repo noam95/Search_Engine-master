@@ -95,6 +95,8 @@ class Searcher:
                 inverted_index = self._indexer.inverted_idx
                 posting_dict = self._indexer.postingDict
                 try:
+                    if inverted_index[term][1] > self._indexer.config.get_cut_by():  # TODO
+                        continue
                     term_data = inverted_index[term]
                     term_line_in_posting = term_data[0][1]
                     file_name = term_data[0][0]
@@ -141,10 +143,12 @@ class Searcher:
             for sys in wordnet.synsets(term):
                 for lemma in sys.lemmas():
                     if lemma.name().__contains__("_"):
-                        splited = lemma.name().split("_")
-                        [expand_set.add(word) for word in splited]
+                        # splited = lemma.name().split("_")
+                        # [expand_set.add(word) for word in splited]
+                        continue
                     else:
                         expand_set.add(lemma.name())
+                        break
         # [query.append(term) for term in expand_set if term not in query]
         # for opt in expand_set:
         #     query.append(opt)
