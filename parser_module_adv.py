@@ -117,6 +117,7 @@ class Parse_ADV(Parse):
     def numbers_to_int(self,num):
 
         numbers = ['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen', \
+
              'seventeen','eighteen','nineteen','twenteen']
         if num in numbers:
             num = numbers.index(num)

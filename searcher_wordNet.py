@@ -149,7 +149,10 @@ class Searcher:
                     else:
                         expand_set.add(lemma.name())
                         break
+
         [query.append(term) for term in expand_set if term not in query]
+        # [query.append(term) for term in expand_set if term not in query]
+
         # for opt in expand_set:
         #     query.append(opt)
         # checks_if_in_dict = [t for t in expand_set if t in self._indexer.inverted_idx]
