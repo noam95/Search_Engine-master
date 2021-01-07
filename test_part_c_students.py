@@ -12,8 +12,6 @@ if __name__ == '__main__':
 
     logging.basicConfig(filename='part_c_tests.log', level=logging.DEBUG,
                         filemode='w', format='%(levelname)s %(asctime)s: %(message)s')
-    import metrics
-
 
     def test_file_exists(fn):
         if os.path.exists(fn):
@@ -40,6 +38,7 @@ if __name__ == '__main__':
 
     start = datetime.now()
     try:
+        import metrics
         # is the report there?
         test_file_exists('report_part_c.docx')
         # is benchmark data under 'data' folder?
@@ -47,7 +46,7 @@ if __name__ == '__main__':
         q2n_relevant = None
         if not test_file_exists(bench_data_path) or \
                 not test_file_exists(bench_lbls_path):
-            logging.error("Benchmark data does exist under the 'data' folder.")
+            logging.error("Benchmark data does not exist under the 'data' folder.")
             sys.exit(-1)
         else:
             bench_lbls = pd.read_csv(bench_lbls_path,
@@ -81,8 +80,7 @@ if __name__ == '__main__':
                 logging.error('model.zip file does not exists.')
 
         # test for each search engine module
-
-        engine_modules = ['search_engine_' + name for name in ['3']]
+        engine_modules = ['search_engine_' + name for name in ['1','2','3','4','5','best']]
         for engine_module in engine_modules:
             try:
                 # does the module file exist?
@@ -154,7 +152,7 @@ if __name__ == '__main__':
                 if q_results_labeled is not None:
                     # test that MAP > 0
                     results_map = metrics.map(q_results_labeled)
-                    logging.debug(f"{engine_module} results have            MAP value of {results_map}.")
+                    logging.debug(f"{engine_module} results have MAP value of {results_map}.")
                     if results_map <= 0 or results_map > 1:
                         logging.error(f'{engine_module} results MAP value is out of range (0,1).')
 
