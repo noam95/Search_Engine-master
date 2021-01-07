@@ -199,7 +199,6 @@ class Parse:
         return w
 
     def parse_date(self,tweet_date):
-        pass
         try:
             date_split = tweet_date.split(" ")
             token_list = []
