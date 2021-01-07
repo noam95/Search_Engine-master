@@ -91,9 +91,9 @@ class Searcher:
                 inverted_index = self._indexer.inverted_idx
                 posting_dict = self._indexer.postingDict
                 try:
-                    # if inverted_index[term][1]<0:#TODO
-                    #     continue
-                    if inverted_index[term][1] > self._indexer.config.get_cut_by()*4:  # TODO
+                    if inverted_index[term][1] > self._indexer.config.get_cut_by()*2:  # TODO
+                        continue
+                    if inverted_index[term][1] < 2:  # TODO
                         continue
                     term_data = inverted_index[term]
                     term_line_in_posting = term_data[0][1]

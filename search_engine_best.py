@@ -5,7 +5,7 @@ import pandas as pd
 from parser_module_stamming import Parse_stem
 from reader import ReadFile
 from configuration import ConfigClass
-from parser_module_adv import Parse_ADV
+from parser_module import Parse
 from indexer import Indexer
 from searcher_word2vec import Searcher
 from timeit import default_timer as timer
@@ -28,7 +28,7 @@ class SearchEngine:
         if config.toStem:
             self._parser = Parse_stem()
         else:
-            self._parser = Parse_ADV()
+            self._parser = Parse()
         self._indexer = Indexer(config)
         self._model = None
 

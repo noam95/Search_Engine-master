@@ -79,7 +79,7 @@ class Searcher:
         """
         relevant_docs = {}
         query = self.fix_query_spelling(query_as_list)
-        #query =query_as_list
+        # query =query_as_list
 
         # if self.config.toStem:
         #     sttemer = PorterStemmer()

@@ -22,6 +22,8 @@ class SearchEngine:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation, but you must have a parser and an indexer.
     def __init__(self, config=None):
+        if config == None:
+            config = ConfigClass()
         self._config = config
         if config.toStem:
             self._parser = Parse_stem()
