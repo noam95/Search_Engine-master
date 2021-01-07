@@ -44,7 +44,7 @@ class Searcher:
         relevant_docs = self._relevant_docs_from_posting(query_as_list)
 
         end_searcher = timer()
-        print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
+        # print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
         for term in query_as_list:
             if term in relevant_docs.keys():
                 if term in query_syns:
@@ -66,8 +66,8 @@ class Searcher:
         else:
             ranked_docs = self._renker.rank_relevant_docs(relevant_doc_dict, advance_query,self._indexer)
         end_qury = timer()
-        print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
-        print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
+        # print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
+        # print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
 
         return len(ranked_docs) , ranked_docs
         # query_as_list = self._parser.parse_sentence(query)
@@ -110,16 +110,14 @@ class Searcher:
                     relevant_docs[term] = original_term_data
                 except:
                     # lower case
-                    try:
-                        term_data = inverted_index[term.lower()]
-                        term_line_in_posting = term_data[0][1]
-                        file_name = term_data[0][0]
-                        origin_lines = posting_dict[file_name]
-                        relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
-                    except:
-                        pass
+                    term_data = inverted_index[term.lower()]
+                    term_line_in_posting = term_data[0][1]
+                    file_name = term_data[0][0]
+                    origin_lines = posting_dict[file_name]
+                    relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
+
             except Exception:
-                raise
+                pass
         return relevant_docs #dict Keys- Term, Values- list of docs
 
 

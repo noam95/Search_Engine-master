@@ -45,7 +45,7 @@ class Searcher:
         relevant_docs = self._relevant_docs_from_posting(query_as_list)
 
         end_searcher = timer()
-        print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
+        # print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
         for term in query_as_list:
             if term in relevant_docs.keys():
                 advance_query[term] = query_as_list.count(term) / len(query_as_list)
@@ -61,8 +61,8 @@ class Searcher:
         else:
             ranked_docs = self._renker.rank_relevant_docs(relevant_doc_dict, advance_query,self._indexer)
         end_qury = timer()
-        print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
-        print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
+        # print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
+        # print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
 
         return len(ranked_docs) , ranked_docs
         # query_as_list = self._parser.parse_sentence(query)
@@ -111,7 +111,7 @@ class Searcher:
                     origin_lines = posting_dict[file_name]
                     relevant_docs[term.lower()] = origin_lines[term_line_in_posting]# + original_term_data
             except Exception:
-                raise
+                pass
         return relevant_docs #dict Keys- Term, Values- list of docs
 
 
@@ -147,9 +147,13 @@ class Searcher:
                         # [expand_set.add(word) for word in splited]
                         continue
                     else:
-                        expand_set.add(lemma.name())
-                        break
-
+                        try:
+                            if self._indexer.inverted_index[lemma.name()][1] < 10 or self._indexer.inverted_index[lemma.name()][1] > self._indexer.config.get_cut_by():  # TODO
+                                continue
+                            expand_set.add(lemma.name())
+                            break
+                        except:
+                            pass #not in the indexer
         [query.append(term) for term in expand_set if term not in query]
         # [query.append(term) for term in expand_set if term not in query]
 

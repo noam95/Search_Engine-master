@@ -69,7 +69,7 @@ class Ranker:
                     dict_doc[doc_id] = new_vec
                     dict_doc[doc_id] += tf_idf_vector
         end_calculating_vectors = timer()
-        print(str(timedelta(seconds=end_calculating_vectors - start_calculating_vectors)) + "calculatingvectors time")
+        #print(str(timedelta(seconds=end_calculating_vectors - start_calculating_vectors)) + "calculatingvectors time")
         rank_cosine = []
         temp_vec = []
         cosine_sim = numpy.zeros(300)
@@ -94,7 +94,7 @@ class Ranker:
                     continue
                 rank_cosine.append(rank_tuple)
         end_calculate_cosim = timer()
-        print(str(timedelta(seconds=end_calculate_cosim - start_calculate_cosim)) + "calculate_cosim time")
+        #print(str(timedelta(seconds=end_calculate_cosim - start_calculate_cosim)) + "calculate_cosim time")
         # if rank_cosine == []:
         #     return rank_cosine, key=lambda item: item[0]
 

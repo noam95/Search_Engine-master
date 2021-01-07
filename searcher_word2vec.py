@@ -43,7 +43,7 @@ class Searcher:
         relevant_docs = self._relevant_docs_from_posting(query_as_list)
 
         end_searcher = timer()
-        print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
+        # print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
         for term in query_as_list:
             if term in relevant_docs.keys():
                 advance_query[term] = query_as_list.count(term) / len(query_as_list)
@@ -59,8 +59,8 @@ class Searcher:
         else:
             ranked_docs = self._renker.rank_relevant_docs(relevant_doc_dict, advance_query,self._indexer)
         end_qury = timer()
-        print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
-        print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
+        # print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
+        # print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
 
         return len(ranked_docs) , ranked_docs
         # query_as_list = self._parser.parse_sentence(query)
@@ -91,9 +91,9 @@ class Searcher:
                 inverted_index = self._indexer.inverted_idx
                 posting_dict = self._indexer.postingDict
                 try:
-                    # if inverted_index[term][1]<0:#TODO
-                    #     continue
-                    if inverted_index[term][1] > self._indexer.config.get_cut_by()*4:  # TODO
+                    if inverted_index[term][1] > self._indexer.config.get_cut_by()*2:  # TODO
+                        continue
+                    if inverted_index[term][1] < 2:  # TODO
                         continue
                     term_data = inverted_index[term]
                     term_line_in_posting = term_data[0][1]

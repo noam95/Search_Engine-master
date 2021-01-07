@@ -199,7 +199,6 @@ class Parse:
         return w
 
     def parse_date(self,tweet_date):
-        pass
         try:
             date_split = tweet_date.split(" ")
             token_list = []
@@ -290,50 +289,50 @@ class Parse:
 
     def UrlHandle(self, word):
         return []
-        # try:
-        #     to_return = []
-        #     url_split = urlparse(word)
-        #     temp_str = ''
-        #     for l in url_split[0]:
-        #         temp_str += l
-        #     to_return.append(temp_str)
-        #     temp_str = ''
-        #     for l in url_split[1]:
-        #         temp_str += l
-        #     if 'www' in temp_str:
-        #         to_return.append(temp_str[:3])
-        #         to_return.append(temp_str[4:])
-        #     else:
-        #         to_return.append(temp_str)
-        #     temp_str = ''
-        #     for l in url_split[2]:
-        #         if not (33 <= ord(l) <= 47 or 58 <= ord(l) <= 64 or 91 <= ord(l) <= 96
-        #                 or 123 <= ord(l) <= 126): #not unneccry char
-        #             temp_str += l
-        #         else:
-        #             if temp_str != '':
-        #                 if temp_str not in self.stop_words:
-        #                     to_return.append(temp_str)
-        #                     temp_str = ''
-        #                 else:
-        #                     temp_str = ''
-        #     for i in range(3, 6):
-        #         for l in url_split[i]:
-        #             if not (33 <= ord(l) <= 47 or 58 <= ord(l) <= 64 or 91 <= ord(l) <= 96
-        #                     or 123 <= ord(l) <= 126):  # not unneccry char
-        #                 temp_str += l
-        #             else:
-        #                 if temp_str != '':
-        #                     if temp_str not in self.stop_words:
-        #                         to_return.append(temp_str)
-        #                         temp_str = ''
-        #                     else:
-        #                         temp_str = ''
-        #     to_return.append(temp_str)
-        #     return to_return
-        # except Exception:
-        #     pass
-        #     #print("fail in URL")
+        try:
+            to_return = []
+            url_split = urlparse(word)
+            temp_str = ''
+            for l in url_split[0]:
+                temp_str += l
+            to_return.append(temp_str)
+            temp_str = ''
+            for l in url_split[1]:
+                temp_str += l
+            if 'www' in temp_str:
+                to_return.append(temp_str[:3])
+                to_return.append(temp_str[4:])
+            else:
+                to_return.append(temp_str)
+            temp_str = ''
+            for l in url_split[2]:
+                if not (33 <= ord(l) <= 47 or 58 <= ord(l) <= 64 or 91 <= ord(l) <= 96
+                        or 123 <= ord(l) <= 126): #not unneccry char
+                    temp_str += l
+                else:
+                    if temp_str != '':
+                        if temp_str not in self.stop_words:
+                            to_return.append(temp_str)
+                            temp_str = ''
+                        else:
+                            temp_str = ''
+            for i in range(3, 6):
+                for l in url_split[i]:
+                    if not (33 <= ord(l) <= 47 or 58 <= ord(l) <= 64 or 91 <= ord(l) <= 96
+                            or 123 <= ord(l) <= 126):  # not unneccry char
+                        temp_str += l
+                    else:
+                        if temp_str != '':
+                            if temp_str not in self.stop_words:
+                                to_return.append(temp_str)
+                                temp_str = ''
+                            else:
+                                temp_str = ''
+            to_return.append(temp_str)
+            return to_return
+        except Exception:
+            pass
+            #print("fail in URL")
 
     def is_number(self, w):
         try:

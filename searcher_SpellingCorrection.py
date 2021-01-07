@@ -42,7 +42,7 @@ class Searcher:
         relevant_docs = self._relevant_docs_from_posting(query_as_list)
 
         end_searcher = timer()
-        print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
+        # print(str(timedelta(seconds=end_searcher - start_searcher)) + "searcher time")
         for term in query_as_list:
             if term in relevant_docs.keys():
                 advance_query[term] = query_as_list.count(term) / len(query_as_list)
@@ -58,8 +58,8 @@ class Searcher:
         else:
             ranked_docs = self._renker.rank_relevant_docs(relevant_doc_dict, advance_query,self._indexer)
         end_qury = timer()
-        print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
-        print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
+        # print(str(timedelta(seconds=end_qury - start_renking)) + "ranking time")
+        # print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
 
         return len(ranked_docs) , ranked_docs
         # query_as_list = self._parser.parse_sentence(query)
@@ -79,7 +79,7 @@ class Searcher:
         """
         relevant_docs = {}
         query = self.fix_query_spelling(query_as_list)
-        #query =query_as_list
+        # query =query_as_list
 
         # if self.config.toStem:
         #     sttemer = PorterStemmer()
