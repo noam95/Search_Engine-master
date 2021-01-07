@@ -64,12 +64,14 @@ if __name__ == '__main__':
             logging.info("Successfully loaded queries data.")
 
         import configuration
+
         config = configuration.ConfigClass()
-        
+
         # do we need to download a pretrained model?
         model_url = config.get_model_url()
         if model_url is not None and config.get_download_model():
             import utils
+
             dest_path = 'model.zip'
             utils.download_file_from_google_drive(model_url, dest_path)
             if not os.path.exists(model_dir):
@@ -98,7 +100,8 @@ if __name__ == '__main__':
                     "engine.build_index_from_parquet(bench_data_path)",
                     globals=globals(), number=1
                 )
-                logging.debug(f"Building the index in {engine_module} for benchmark data took {build_idx_time} seconds.")
+                logging.debug(
+                    f"Building the index in {engine_module} for benchmark data took {build_idx_time} seconds.")
                 if build_idx_time > 60:
                     logging.error('Parsing and index our *small* benchmark dataset took over a minute!')
                 # test loading precomputed model
@@ -128,7 +131,8 @@ if __name__ == '__main__':
                         if q_n_res is None or q_res is None or q_n_res < 1 or len(q_res) < 1:
                             logging.error(f"Query {q_id} with keywords '{q_keywords}' returned no results.")
                         else:
-                            logging.debug(f"{engine_module} successfully returned {q_n_res} results for query number {q_id}.")
+                            logging.debug(
+                                f"{engine_module} successfully returned {q_n_res} results for query number {q_id}.")
                             invalid_tweet_ids = [doc_id for doc_id in q_res if invalid_tweet_id(doc_id)]
                             if len(invalid_tweet_ids) > 0:
                                 logging.error(f"Query  {q_id} returned results that are not valid tweet ids: " + str(
@@ -148,8 +152,8 @@ if __name__ == '__main__':
                     zero_recall_qs = [q_id for q_id, rel in q2n_relevant.items() \
                                       if metrics.recall_single(q_results_labeled, rel, q_id) == 0]
                     if len(zero_recall_qs) > 0:
-                        logging.warning(f"{engine_module}'s recall for the following queries was zero {zero_recall_qs}.")
-
+                        logging.warning(
+                            f"{engine_module}'s recall for the following queries was zero {zero_recall_qs}.")
 
                 if q_results_labeled is not None:
                     # test that MAP > 0
@@ -162,10 +166,10 @@ if __name__ == '__main__':
                     # precision@5, precision@10, precision@50, and recall
                     # is in [0,1].
                     prec, p5, p10, p50, recall = \
-                        metrics.precision(q_results_labeled),\
-                        metrics.precision(q_results_labeled.groupby('query').head(5)),\
-                        metrics.precision(q_results_labeled.groupby('query').head(10)),\
-                        metrics.precision(q_results_labeled.groupby('query').head(50)),\
+                        metrics.precision(q_results_labeled), \
+                        metrics.precision(q_results_labeled.groupby('query').head(5)), \
+                        metrics.precision(q_results_labeled.groupby('query').head(10)), \
+                        metrics.precision(q_results_labeled.groupby('query').head(50)), \
                         metrics.recall(q_results_labeled, q2n_relevant)
                     logging.debug(f"{engine_module} results produced average precision of {prec}.")
                     logging.debug(f"{engine_module} results produced average precision@5 of {p5}.")
