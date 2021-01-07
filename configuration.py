@@ -21,6 +21,8 @@ class ConfigClass:
         self.toStem = False
         self.oneFile = True
         self.cutFreqBy = 1000
+        self.google_news_vectors_negative300_path = '../../../../GoogleNews-vectors-negative300.bin'
+        self.glove_twitter_27B_25d_path = '../../../../glove.twitter.27B.25d.txt'
 
 
         print('Project was created successfully..')

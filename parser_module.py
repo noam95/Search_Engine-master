@@ -12,7 +12,7 @@ from nltk import PorterStemmer
 class Parse:
 
     def __init__(self):
-        self.stop_words = [] #TODO stopwords.words('english')
+        self.stop_words =[]# stopwords.words('english')
         self.additional_stop_words = ['RT', 'tweet', 'www', 'http', 'https','WWW']
         self.corona_list = ['corona', 'coronavirus', 'covid','covid19', 'covid 19', 'corona virus', 'virus corona', 'corona_virus', 'virus_corona']
 

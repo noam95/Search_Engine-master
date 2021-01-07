@@ -95,6 +95,7 @@ class SearchEngine:
         assign to self._model, which is passed on to the searcher at query time.
         """
         self._model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+        # self._model = KeyedVectors.load_word2vec_format(self._config.google_news_vectors_negative300_path, binary=True)
 
 
     # DO NOT MODIFY THIS SIGNATURE
