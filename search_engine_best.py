@@ -22,6 +22,8 @@ class SearchEngine:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation, but you must have a parser and an indexer.
     def __init__(self, config=None):
+        if config == None:
+            config = ConfigClass()
         self._config = config
         if config.toStem:
             self._parser = Parse_stem()
@@ -113,4 +115,65 @@ class SearchEngine:
             return
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
+
+    def main(self, queries = None, num_docs_to_retrieve= None):
+        config = self._config
+        # config.set_corpusPath(corpus_path)
+        # config.set_savedFileMainFolder(output_path)
+        # config.set_toStem(stemming)
+        self.load_precomputed_model()#TODO-change dir
+        vectorModel = self._model
+        start = timer()
+        print("----started parsing and indexer----")
+        self.build_index_from_parquet('data/benchmark_data_train.snappy.parquet')
+        end = timer()
+        print("Process ends..")
+        # print(timedelta(seconds=end - start))
+
+        if num_docs_to_retrieve == None:
+            num_docs_to_retrieve = 2000
+        inverted_index = self.load_index('inverted_idx')
+        if queries == None: #for end users use
+            user_query = input("Please enter a query")
+            user_num = int(input("How many tweets you want to get (maximum)?"))
+            res = self.search(user_query)
+            print("here are the links to the tweets related to use query")
+            for x in range(user_num):
+                try:
+                    tweeter_start_link = 'https://twitter.com/IsraelHayomHeb/status/'
+                    tweet_id = (res[1][x])
+                    print(tweeter_start_link+tweet_id)
+
+                except:
+                    pass #less than number of doc to retrive found
+        else:#for engenier use
+            import csv
+            with open('queries_output.csv', 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(["query", "tweet"])
+                if not isinstance(queries, list):
+                    try:
+                        f = open(queries, "r+", encoding='utf-8')
+                        # queries = f.read()
+                        queries = f.readlines()
+                        f.close()
+                    except Exception:
+                        raise
+                        print("fail in reading queries file")
+                        # see numbers for the document file
+                    i = 0
+                    for querie in queries:
+                        print("querie number" + str(i))
+                        print(querie)
+                        i += 1
+                        res = self.search(querie)
+                        for s in range(num_docs_to_retrieve):
+                            try:
+                                writer.writerow([i,res[1][s]])
+                            except:
+                                pass  # less than number of doc to retrive found
+                        # for doc in res[1]:
+                        #     #print('Tweet id: {}, Score: {}'.format(doc_tuple[1], doc_tuple[0]))
+                        #     writer.writerow([i, doc])
+
 
