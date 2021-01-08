@@ -99,6 +99,9 @@ class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
+    def get_full_text(self, d_id):
+        return  self._indexer.documents_data[d_id][4]
+
     def search(self, query):
         """
         Executes a query over an existing index and returns the number of
