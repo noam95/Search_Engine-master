@@ -43,7 +43,7 @@ class Indexer:
         else:
             max_freq_term = " "
             total_words =  len(document.full_text.split(" "))
-        self.documents_data[d_id] = [max_freq_term,dict_length,total_words,0 ]
+        self.documents_data[d_id] = [max_freq_term,dict_length,total_words,0 , document.full_text]#TODO
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.

@@ -85,6 +85,9 @@ class SearchEngine:
         """
         self._indexer.load_index(fn)
 
+    def get_full_text(self, d_id):
+        return  self._indexer.documents_data[d_id][4]
+
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def load_precomputed_model(self, model_dir=None):#TODO implement

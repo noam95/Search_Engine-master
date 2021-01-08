@@ -73,9 +73,12 @@ class SearchEngine:
                             indexer.add_new_doc(parsed_document)
                         # indexer.update_posting_files()
                         # indexer.reset_cach()
+
         self._indexer.save_index('inverted_idx')
         print('Finished parsing and indexing.')
 
+    def get_full_text(self, d_id):
+        return  self._indexer.documents_data[d_id][4]
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def load_index(self, fn):
