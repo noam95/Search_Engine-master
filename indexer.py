@@ -43,7 +43,7 @@ class Indexer:
         else:
             max_freq_term = " "
             total_words =  len(document.full_text.split(" "))
-        self.documents_data[d_id] = [max_freq_term,dict_length,total_words,0 , document.full_text]#TODO
+        self.documents_data[d_id] = [max_freq_term,dict_length,total_words,0]
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -53,6 +53,7 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
+        fn = fn.split(".")[0]
         try:
             stored_index = utils.load_obj(fn)
             self.inverted_index = stored_index[0]
@@ -76,7 +77,7 @@ class Indexer:
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
-    def _is_term_exist(self, term):#TODO:check if nessesery
+    def _is_term_exist(self, term):
         """
         Checks if a term exist in the dictionary.
         """
@@ -85,7 +86,7 @@ class Indexer:
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
-    def get_term_posting_list(self, term):#TODO:check if nessesery
+    def get_term_posting_list(self, term):
         """
         Return the posting list from the index for a term.
         """
@@ -93,8 +94,6 @@ class Indexer:
 
     def add_term(self, term, number_of_appears, document_id):
         '''add to main dict'''
-        #post_file_name = (term[0].lower()) #the file name has to be lower TODO:send to name function
-        #post_file_name = self.NewFileName(term)
         if term.isupper() and term.lower() in self.inverted_idx.keys():#if the term is upper and the dict contain's a lower version
             term = term.lower()
         if not term in self.inverted_idx.keys() and term.upper() in self.inverted_idx.keys():  # if there was no lower but was a upper term
@@ -102,19 +101,19 @@ class Indexer:
             self.inverted_idx.pop(term.upper())  # remove the upper key
         #adding term
         if term in self.inverted_idx.keys(): #if there was already a term
-            post_file_line = self.inverted_idx[term][0][1]#TODO: inverted index change
-            post_file_name = self.inverted_idx[term][0][0]#TODO edit post file name
+            post_file_line = self.inverted_idx[term][0][1]
+            post_file_name = self.inverted_idx[term][0][0]
             data = (str(number_of_appears), document_id)
             self.add_term_to_cath_dict(post_file_name,post_file_line, data)
             self.inverted_idx[term][1] += 1
             self.inverted_idx[term][2] += number_of_appears
 
         else: #if this is the first appear of the term
-            post_file_name = self.NewFileName(term)#TODO: define post file name
+            post_file_name = self.NewFileName(term)
             if " " in term: #this is name and entity
                 if term in self.name_and_entity.keys():#not the first appear
                     #adding in first time menually
-                    post_file_name = self.name_and_entity[term][0]#TODO: inverted index change
+                    post_file_name = self.name_and_entity[term][0]
                     document_id = (self.name_and_entity[term][1])[1]
                     number_of_appears = (self.name_and_entity[term][1])[0]
                     if post_file_name in self.header_posting_files.keys():  # if there is already a post file
@@ -123,8 +122,7 @@ class Indexer:
                     else:  # if we need to creat a post file
                         self.header_posting_files[post_file_name] = 1
                         post_file_line = 0
-                    #TODO: post file name change - line below
-                    self.inverted_idx[term] = [(post_file_name,post_file_line), 1,number_of_appears]  # TODO: check the '0' #this term appear in 1 document and number num_of_apepers till now
+                    self.inverted_idx[term] = [(post_file_name,post_file_line), 1,number_of_appears]
                     data = (str(number_of_appears), document_id)
                     self.add_term_to_cath_dict(post_file_name, post_file_line, data)
                     # adding second time by calling add term function
@@ -139,8 +137,8 @@ class Indexer:
             else:#if we need to creat a post file
                 self.header_posting_files[post_file_name] = 1
                 post_file_line = 0
-                #TODO: post file name change line below
-            self.inverted_idx[term] = [(post_file_name,post_file_line),1,number_of_appears] #TODO: check the '0' #this term appear in 1 document and number num_of_apepers till now
+
+            self.inverted_idx[term] = [(post_file_name,post_file_line),1,number_of_appears]
             data = (str(number_of_appears), document_id)
             self.add_term_to_cath_dict(post_file_name, post_file_line, data)
 
@@ -163,9 +161,6 @@ class Indexer:
                 origin_file_len = len(origin_lines)
                 index = 0
                 while index < origin_file_len:
-                    #new_data = (new_data[index])
-                    #marged_term = self.margelist(origin_lines[index], new_data[index])#TODO: fix the merge
-                    #marged_post_file.append(marged_term)
                     try:
                         marged_post_file.append(origin_lines[index] + new_data[index])
                         index +=1
@@ -192,15 +187,13 @@ class Indexer:
                     if len(stored_data) <= lineNumber:#if there is no data for the term
                         stored_data.append([data])#open new line for the term
                     else:#if tere is already data for the spasific term
-                        #stored_data[lineNumber] = self.margelist(stored_data[lineNumber],[data]) #insert the new data keep sort TODO: check if better
                         stored_data[lineNumber].append(data)#adding the data to the term line data
-                        #stored_data[lineNumber].sort(reverse=True, key=lambda x: x[0])#sort the data
                 else:#if there is no posting file yet
                     stored_data = [[data]]#put the data to be the first line data
                 self.postingDict[name_of_file] = stored_data #update the cach data
             except:
                 pass
-                #print("fail to add a term to the cath dict" + name_of_file)
+                #"fail to add a term to the cath dict" + name_of_file
 
     def reset_cach(self):
         for post_file_lines in self.postingDict.keys():#for each
@@ -247,13 +240,10 @@ class Indexer:
         corpus_len = len(self.documents_data.keys())
         self.config.set_cut_by(corpus_len)
         for term in self.inverted_idx.keys():
-            #inverted index = keys-terms. values- [(post file name, post file line),number of documents appears in,total appearance in corpus]
-            #posting dict =  keys-posting files names. values- lists of lines(lists) each line represent term
-            #documents_data = keys- document id. values- [max freq term, number of difrent words, number of words, weight]
             post_file_name = self.inverted_idx[term][0][0]
             post_file_line = self.inverted_idx[term][0][1]
             df = self.inverted_idx[term][1] #number of ducuments appears in
-            idf = math.log((corpus_len/df),10)#TODO
+            idf = math.log((corpus_len/df),10)
             for terminDoc in self.postingDict[post_file_name][post_file_line]:
                 tf = (int(terminDoc[0])) / self.documents_data[terminDoc[1]][2] #number of appear /number of word in doc
                 self.documents_data[terminDoc[1]][3] += tf*idf

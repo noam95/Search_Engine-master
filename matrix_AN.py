@@ -154,31 +154,6 @@ def map(df):
         return 0
     return map_value / len(quries_set)
 
-# def test_value(func, expected, variables):
-#         """
-#             This function is used to test your code. Do Not change it!!
-#             :param func: Function: The function to test
-#             :param expected: Float: The expected value from the function
-#             :param variables: List: a list of variables for the function
-#         """
-#         global test_number, results
-#         test_number += 1
-#         result = func(*variables)
-#         try:
-#             result = float(f'{result:.3f}')
-#             if abs(result - float(f'{expected:.3f}')) <= 0.01:
-#                 results.extend([f'Test: {test_number} passed'])
-#             else:
-#                 results.extend([f'Test: {test_number} Failed running: {func.__name__}'
-#                                 f' expected: {expected} but got {result}'])
-#         except ValueError as ve:
-#             results.extend([f'Test: {test_number} Failed running: {func.__name__}'
-#                             f' value return is not a number'])
-#         except:
-#             d = traceback.format_exc().splitlines()
-#             results.extend(
-#                 [f'Test: {test_number} Failed running: {func.__name__} with the following error: {" ".join(d)}'])
-
 def createDF(retunedDoc, benchMark):#return df with lable from benchmark and number of relevant dict
 
     colnames_benchmark = ['query', 'tweet', 'y_true']
@@ -234,6 +209,4 @@ def calculate_engine_officiant(engine_output, benchmark):
         r.writerows(df.values.tolist())
     return pression_val, recall_val, map_val
 
-
-
-calculate_engine_officiant('queries_output.csv','C:/Users/User/PycharmProjects/Search_Engine_AN/data/benchmark_lbls_train.csv')
+#calculate_engine_officiant('queries_output.csv','C:/Users/User/PycharmProjects/Search_Engine_AN/data/benchmark_lbls_train.csv')

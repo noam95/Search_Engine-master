@@ -37,7 +37,7 @@ class Searcher:
         start_qury = timer()
         query_as_list = p.parse_sentence(query)
         # query_as_list = self.expand_query_wordnet(query_as_list)# returnes a list of words
-        query_syns = self.expand_query_wordnet(query_as_list)
+        query_syns = self.expand_query_theasaurus(query_as_list)
         [query_as_list.append(term) for term in query_syns]
         advance_query = {}  # key- term. value - tf of the term in qurey
         start_searcher = timer()
@@ -70,12 +70,6 @@ class Searcher:
         # print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
 
         return len(ranked_docs) , ranked_docs
-        # query_as_list = self._parser.parse_sentence(query)
-        #
-        # relevant_docs = self._relevant_docs_from_posting(query_as_list)
-        # n_relevant = len(relevant_docs)
-        # ranked_doc_ids = Ranker.rank_relevant_docs(relevant_docs)
-        # return n_relevant, ranked_doc_ids
 
     # feel free to change the signature and/or implementation of this function
     # or drop altogether.
@@ -100,7 +94,7 @@ class Searcher:
                 inverted_index = self._indexer.inverted_idx
                 posting_dict = self._indexer.postingDict
                 try:
-                    if inverted_index[term][1] > self._indexer.config.get_cut_by():  # TODO
+                    if inverted_index[term][1] > self._indexer.config.get_cut_by():
                         continue
                     term_data = inverted_index[term]
                     term_line_in_posting = term_data[0][1]
@@ -143,7 +137,7 @@ class Searcher:
                     docs_dict[doc_id] = (1, [(term, doc_ditails[0])])
         return docs_dict
 
-    def expand_query_wordnet(self, query):
+    def expand_query_theasaurus(self, query):
         expand_set = set()
         for term in query:
             sys_list = list(thesaurus.synonyms(term, fileid="simN.lsp"))

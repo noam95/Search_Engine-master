@@ -14,7 +14,7 @@ class ConfigClass:
         # model file with every submission.
         self._download_model = False
 
-        self.corpusPath = 'C:/Users/User/PycharmProjects/Search_Engine-master/data'
+        self.corpusPath = '/data'
         self.savedFileMainFolder = 'output_path'
         self.saveFilesWithStem = self.savedFileMainFolder + "/WithStem"
         self.saveFilesWithoutStem = self.savedFileMainFolder + "/WithoutStem"

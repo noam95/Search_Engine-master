@@ -80,20 +80,17 @@ class Searcher:
         """
         relevant_docs = {}
         query = self.fix_query_spelling(query_as_list)
-        # query = query_as_list
-        # if self.config.toStem:
-        #     sttemer = PorterStemmer()
+
         for term in query:
-            # if self.config.toStem and " " not in term:#no stem for name and identity
-            #     term = sttemer.stem(term)
+
             try:#collecting term data
                 #for cases like 'NILLI' or 'Donald Trump'
                 inverted_index = self._indexer.inverted_idx
                 posting_dict = self._indexer.postingDict
                 try:
-                    if inverted_index[term][1] > self._indexer.config.get_cut_by()*2:  # TODO
+                    if inverted_index[term][1] > self._indexer.config.get_cut_by()*2:
                         continue
-                    if inverted_index[term][1] < 2:  # TODO
+                    if inverted_index[term][1] < 2:
                         continue
                     term_data = inverted_index[term]
                     term_line_in_posting = term_data[0][1]

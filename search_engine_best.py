@@ -77,8 +77,8 @@ class SearchEngine:
         self._indexer.save_index('inverted_idx')
         print('Finished parsing and indexing.')
 
-    def get_full_text(self, d_id):
-        return  self._indexer.documents_data[d_id][4]
+    # def get_full_text(self, d_id):
+    #     return  self._indexer.documents_data[d_id][4]
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def load_index(self, fn):
@@ -125,7 +125,7 @@ class SearchEngine:
         # config.set_corpusPath(corpus_path)
         # config.set_savedFileMainFolder(output_path)
         # config.set_toStem(stemming)
-        self.load_precomputed_model()#TODO-change dir
+        self.load_precomputed_model()
         vectorModel = self._model
         start = timer()
         print("----started parsing and indexer----")

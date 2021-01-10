@@ -18,7 +18,6 @@ class Searcher:
         self._parser = parser
         self._indexer = indexer
         self._renker = Ranker()
-        #self._ranker = indexer.config.getRanker #TODO
         self._model = model
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -52,7 +51,6 @@ class Searcher:
         relevant_doc_dict = self.get_relevant_doc_dict(relevant_docs)  # key= doc_id, value= (num_of_terms appears_in_doc from qury, [(terms,num_of_term_appears)])
         relevant_doc_dict = sorted(relevant_doc_dict.items(), key=lambda item: item[1][0], reverse=True)
         relevant_doc_dict = dict(relevant_doc_dict[0:2000]) if len(relevant_doc_dict) > 2000 else dict(relevant_doc_dict)
-        # relevant_doc_dict = sorted(relevant_doc_dict.keys(), key=lambda x:x[0],reverse=True)
         start_renking = timer()
         if self._model != None:
             ranked_docs = self._renker.rank_relevant_docs(relevant_doc_dict, advance_query,self._indexer,  self._model)
@@ -63,12 +61,6 @@ class Searcher:
         # print(str(timedelta(seconds=end_qury - start_qury)) + "qury time")
 
         return len(ranked_docs) , ranked_docs
-        # query_as_list = self._parser.parse_sentence(query)
-        #
-        # relevant_docs = self._relevant_docs_from_posting(query_as_list)
-        # n_relevant = len(relevant_docs)
-        # ranked_doc_ids = Ranker.rank_relevant_docs(relevant_docs)
-        # return n_relevant, ranked_doc_ids
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
@@ -80,8 +72,7 @@ class Searcher:
         """
         relevant_docs = {}
         query = query_as_list
-        # if self.config.toStem:
-        #     sttemer = PorterStemmer()
+
         for term in query:
             # if self.config.toStem and " " not in term:#no stem for name and identity
             #     term = sttemer.stem(term)
