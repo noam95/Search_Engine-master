@@ -90,13 +90,11 @@ class Ranker:
                 cosine_sim = (dot / (normlize * doc_weight))
                 #cos = (cosine_sim * 0.7) + (0.3 * dot) #0.707
                 rank_tuple = (cosine_sim, doc[0], relevant_doc[doc[0]][0])  # cosine_similarity result, doc_id, number of common word withw
-                if cosine_sim < 0.33:#TODO
+                if cosine_sim < 0.33:
                     continue
                 rank_cosine.append(rank_tuple)
         end_calculate_cosim = timer()
         #print(str(timedelta(seconds=end_calculate_cosim - start_calculate_cosim)) + "calculate_cosim time")
-        # if rank_cosine == []:
-        #     return rank_cosine, key=lambda item: item[0]
 
         rank_list_sorted = sorted(rank_cosine,  reverse=True)
         end_rank = timer()
@@ -105,4 +103,4 @@ class Ranker:
 
         if k is not None:
             rank_list_sorted = rank_list_sorted[:k]
-        return [d[1] for d in rank_list_sorted]#TODO debug here
+        return [d[1] for d in rank_list_sorted]

@@ -27,7 +27,7 @@ class Parse:
             #url handle
             splited_url = []
             if 'http' in text:
-                index = text.index('http')#TODO:check if gives index of hhtps
+                index = text.index('http')
                 #cut the URL
                 url_part = text[index:]
                 text = text[:index]
@@ -107,7 +107,7 @@ class Parse:
             for var in tokenized_text:#clean end and begining
                 if len(var) > 1:#cut all the term size les than one exept numbers
                     if var.lower() in self.corona_list:#handle virus corona terms
-                        continue #TODO:advance
+                        continue
                         var = 'coronavirus'
                     else:
                         var = self.cut_end_begining(var)

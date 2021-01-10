@@ -70,7 +70,7 @@ class SearchEngine:
                             number_of_documents += 1
                             # index the document data
                             indexer.add_new_doc(parsed_document)
-                        # indexer.update_posting_files()
+                        # indexer.update_posting_files()-use this function for bog corpuses
                         # indexer.reset_cach()
         self._indexer.save_index('inverted_idx')
         print('Finished parsing and indexing.')
@@ -87,7 +87,7 @@ class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
-    def load_precomputed_model(self, model_dir=None):#TODO implement
+    def load_precomputed_model(self, model_dir=None):
         """
         Loads a pre-computed model (or models) so we can answer queries.
         This is where you would load models like word2vec, LSI, LDA, etc. and

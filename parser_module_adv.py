@@ -17,7 +17,7 @@ class Parse_ADV(Parse):
             #url handle
             splited_url = []
             if 'http' in text:
-                index = text.index('http')#TODO:check if gives index of hhtps
+                index = text.index('http')
                 #cut the URL
                 url_part = text[index:]
                 text = text[:index]

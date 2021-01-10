@@ -290,6 +290,8 @@ if __name__ == '__main__':
         #
     except Exception as e:
         logging.error(e, exc_info=True)
+
+
     #
     # run_time = datetime.now() - start
     # logging.debug(f'Total runtime was: {run_time}')
